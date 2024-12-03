@@ -1,7 +1,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
-
+#include <string>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height){
     glViewport(0,0,800,600);
@@ -31,6 +31,49 @@ const char* fragmentShaderSrc = "R(
 
 )";    
 
+int ShaderCompile(const char* source, const char* fSource){
+    unsigned int vertexShader = glfwCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertexShader, 1, &source, nullptr);
+    glCompileShader(vertexShader);
+    shaderCompCheck(vertexShader);
+
+    unsigned int fragmentShader = glfwCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragmentShader, 1, &fSource, nullptr);
+    glCompileShader(fragmentShader);
+    shaderCompCheck(fragmentShader);
+
+    unsigned int shaderProgram;
+    shaderProgram = glfwCreateProgram();
+    glAttachShader(shaderProgram, vertexShader);
+    glAttachSHader(shaderProgram, fragmentShader);
+    glLinkProgram(shaderProgram);
+    sProgramErrorCheck(sProgram);
+    
+    
+    return 0;
+}    
+
+void sProgramErrorCheck(unsigned int sProgram){
+    char infoLog[512];
+    int success;
+    glGetProgramiv(sProgram, GL_LINK_STATUS, &success);
+    if(!success){
+        glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+        std::cerr << "The error:" << infoLog << std::endl;
+    } 
+}
+
+void shaderCompCheck(unsigned int shader){
+    char infoLog[512];
+    int success;
+    glGetProgramiv(shader, GL_COMPILE_STATUS, &success);
+    if(!success){
+        glGetProgramInfoLog(shader, 512, nullptr, infoLog);
+        std::cerr << "ERROR" << infoLog << std::endl;
+        
+    }
+}
+
 int main(){
     if(!glfwInit()){
         std::cerr << "Failed to initialise GLFW" << std::endl;
@@ -58,17 +101,20 @@ int main(){
     GLuint VBO, VAO;
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER,)
+    glBufferData();
     
     glGenVertexArray(1, &VAO);
 
-    unsigned int vertexShader = glfwCreateShader(GL_VERTEX_SHADER);
+    ShaderCompile(&vertexShaderSrc, &fragmentShaderSrc);
     
     while(!glfwWindowShouldClose(window){
+        glClearColour(0.0f, 0.0f, 1.0f, 1.0f);
+        glClear(GL_CLEAR_COLOR_BIT);
 
-      processInput(window);
-      
-      glfwSwapBuffers(window);
-      glfwPollEvents();
+        processInput(window);
+        
+        glSwapBuffers(window);
+        glPollEvents();
     }
     
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
