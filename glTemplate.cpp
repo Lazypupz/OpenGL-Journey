@@ -25,8 +25,11 @@ const char* vertexShaderSrc = "R(
 const char* fragmentShaderSrc = "R(
     #version 330 core 
     out vec4 fragColour;
+
+    //uniform vec4 someColour;
     void main(){
         fragColour = vec4(0.8, 0.5, 0,2, 1,0);
+        //fragColour = someColour;
     }
 
 )";    
@@ -100,10 +103,11 @@ int main(){
 
     GLuint VBO, VAO;
     glGenBuffers(1, &VBO);
-    glBindBuffer(GL_ARRAY_BUFFER,)
-    glBufferData();
+    glBindBuffer(GL_ARRAY_BUFFER,);
+    //glBufferData(GL_ARRAY_BUFFER, 1, sizeof(verticies), verticies, nullptr, nullptr);
     
     glGenVertexArray(1, &VAO);
+    
 
     ShaderCompile(&vertexShaderSrc, &fragmentShaderSrc);
     
@@ -111,6 +115,8 @@ int main(){
         glClearColour(0.0f, 0.0f, 1.0f, 1.0f);
         glClear(GL_CLEAR_COLOR_BIT);
 
+        glUseProgram(shaderProgram);
+        
         processInput(window);
         
         glSwapBuffers(window);
